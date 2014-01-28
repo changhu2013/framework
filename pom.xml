@@ -1,0 +1,186 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>mobi.dadoudou</groupId>
+	<artifactId>framework</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1</version>
+	<name>framework</name>
+	<url>http://www.dadoudou.mobi</url>
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+			<version>3.8.1.v20120830-144521</version>
+			<classifier>without-eclipse</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>3.2.0.RC2</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		
+	</dependencies>
+	<build>
+		<finalName>framework</finalName>
+		<plugins>
+
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.25</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<webDefaultXml>src/test/resources/webdefault.xml</webDefaultXml>
+					<webAppSourceDirectory>src/main/webapp</webAppSourceDirectory>
+				</configuration>
+			</plugin>
+			
+			<!-- | 将该项目以来的JS项目框架解压缩到指定目录 -->
+			<plugin>
+				<groupId>com.riambsoft.maven.plugins</groupId>
+				<artifactId>maven-unzip-plugin</artifactId>
+				<version>0.0.1</version>
+				<configuration>
+					<targetDirectory>src/main/webapp</targetDirectory>
+					<extracts>
+						<!-- 前端rsclient2框架项目 -->
+						<!-- 
+						<extract>
+							<groupId>com.riambsoft</groupId>
+							<artifactId>rsclient2</artifactId>
+							<version>0.0.1-SNAPSHOT</version>
+							<type>zip</type>
+							<targetDirectory>src/main/webapp/pub</targetDirectory>
+						</extract>
+						-->
+
+					</extracts>
+				</configuration>
+				<executions>
+					<execution>
+						<id>unzip</id>
+						<phase>test</phase>
+						<goals>
+							<!-- 
+							<goal>unzip</goal>
+							-->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- | 将该项目依赖的OSGI Bundles 添加到指定的OSGI Bundle库 | 并修改 Bundle 的配置文件 -->
+			<plugin>
+				<groupId>com.riambsoft.maven.plugins</groupId>
+				<artifactId>maven-framework-plugin</artifactId>
+				<version>0.0.1</version>
+				<configuration>
+					<frameworkConfigurationFile>src/main/webapp/WEB-INF/classes/bundles.properties</frameworkConfigurationFile>
+					<osgiPlatformDirectory>src/main/webapp/WEB-INF/eclipse</osgiPlatformDirectory>
+					<excludeDependency>framework.*,org.junit</excludeDependency>
+					<bundles>
+
+						<!-- 以下为blueprint所需bundle -->
+						<bundle>
+							<groupId>org.slf4j</groupId>
+							<artifactId>slf4j-api</artifactId>
+							<version>1.6.4.v20120130-2120</version>
+							<startLevel>1</startLevel>
+						</bundle>
+
+						<bundle>
+							<groupId>org.apache.aries.blueprint</groupId>
+							<artifactId>org.apache.aries.blueprint</artifactId>
+							<version>1.0.0</version>
+							<startLevel>1</startLevel>
+						</bundle>
+
+						<bundle>
+							<groupId>org.apache.aries.blueprint</groupId>
+							<artifactId>org.apache.aries.blueprint.api</artifactId>
+							<version>1.0.0</version>
+							<startLevel>1</startLevel>
+						</bundle>
+
+						<bundle>
+							<groupId>org.apache.aries.proxy</groupId>
+							<artifactId>org.apache.aries.proxy.impl</artifactId>
+							<version>1.0.0</version>
+							<startLevel>1</startLevel>
+						</bundle>
+
+						<bundle>
+							<groupId>org.eclipse.persistence</groupId>
+							<artifactId>javax.persistence</artifactId>
+							<version>2.0.0</version>
+							<startLevel>1</startLevel>
+						</bundle>
+						
+					</bundles>
+				</configuration>
+				<executions>
+					<execution>
+						<id>deploy bundles</id>
+						<phase>test</phase>
+						<goals>
+							<goal>deployBundles</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

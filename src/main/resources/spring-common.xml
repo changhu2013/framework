@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<!-- 导入支持层各服务的Spring配置文件 -->
+	<!-- 
+	<import resource="classpath:core-webservice.xml" />
+	-->
+	
+	<!-- 定义受环境影响易变的变量 -->
+	<!--
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:application.properties</value>
+			</list>
+		</property>
+	</bean>
+	-->
+	
+	<!--
+ 	 | 上下文
+	 -->
+	<bean id="frameworkServletContext"
+		 class="mobi.dadoudou.framework.FrameworkServletContext" 
+		 scope="singleton">
+	</bean>
+	
+	<!--  
+	 | 
+	 | 配置框架运行监听类
+	 | 当启动WEB容器的时候即启动该框架
+	 | 关闭WEB容器的时候关闭该框架
+	 |
+	 | 配置Framework启动类  frameworkLauncherClass 
+     |
+     | 配置启动OSGI框架的命令参数  frameworkCommandLine
+     | -console 表示使用命令行控制台,该参数可不设置
+     | -configuration 表示使用配置文件,该参数必须设置
+     init-method="init" destroy-method="destroy" 
+	 -->
+	<bean
+		class="mobi.dadoudou.framework.FrameworkListener" scope="singleton">
+		<!-- 设定OSGI容器启动的延迟时间,单位毫秒,默认为3000MS
+		<property name="initDelay" value="3000"></property>
+		-->
+		<property name="frameworkServletContext" ref="frameworkServletContext"></property>
+		<!-- 一般不用修改,使用默认类即可
+		<property name="frameworkLauncherClass" 
+		    value="mobi.dadoudou.framework.impl.DefaultFrameworkLauncher"></property>
+		-->
+		<property name="frameworkCommandLine" value="-console -configuration"></property>
+	</bean>
+	
+	<!-- 
+	 | 管理服务控制器
+	 -->
+	<bean id="serviceControllerManager" 
+		class="mobi.dadoudou.framework.core.web.ServiceControllerManager" 
+		factory-method="getInstance" scope="singleton" lazy-init="false">
+	</bean>
+	
+	<!-- 启动WEB容器默认的资源文件servlet -->
+	<mvc:default-servlet-handler />
+	
+</beans>

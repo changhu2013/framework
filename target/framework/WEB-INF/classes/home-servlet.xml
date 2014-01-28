@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+ 个人桌面平台子系统
+ -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver">
+	</bean>
+
+	<bean id="homeServiceController" class="mobi.dadoudou.framework.core.web.ServiceController"
+		lazy-init="false">
+		<constructor-arg index="0" value="home"></constructor-arg>
+		<constructor-arg index="1" ref="serviceControllerManager"></constructor-arg>
+	</bean>
+
+	<bean name="homePageController" class="mobi.dadoudou.framework.core.web.PageController" />
+
+	<!--配置控制器的映射 -->
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="mappings">
+			<props>
+				<prop key="*.rsc">homeServiceController</prop>
+				<prop key="*.jsp">homePageController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!--配置视图 -->
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/home/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+</beans>
