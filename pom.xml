@@ -113,9 +113,9 @@
 
 			<!-- | 将该项目依赖的OSGI Bundles 添加到指定的OSGI Bundle库 | 并修改 Bundle 的配置文件 -->
 			<plugin>
-				<groupId>com.riambsoft.maven.plugins</groupId>
-				<artifactId>maven-framework-plugin</artifactId>
-				<version>0.0.1</version>
+				<groupId>mobi.dadoudou</groupId>
+				<artifactId>maven-osgi-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
 				<configuration>
 					<frameworkConfigurationFile>src/main/webapp/WEB-INF/classes/bundles.properties</frameworkConfigurationFile>
 					<osgiPlatformDirectory>src/main/webapp/WEB-INF/eclipse</osgiPlatformDirectory>
